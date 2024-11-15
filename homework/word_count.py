@@ -6,6 +6,7 @@ import fileinput
 import glob
 import os.path
 from itertools import groupby
+import string
 
 
 #
@@ -26,16 +27,45 @@ from itertools import groupby
 def load_input(input_directory):
     """Funcion load_input"""
 
+    sequence = []
+
+    txt_files = [f for f in os.listdir(input_directory) if f.endswith('.txt')]
+
+    for file in txt_files:
+        file_path = os.path.join(input_directory, file)
+
+        with open(file_path, 'r') as f:
+            lines = f.readlines()
+    
+        for line in lines:
+            tpl = (file, line.strip())
+            sequence.append(tpl)
+    
+    return sequence
+
+input_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'files', 'input'))
 
 #
 # Escriba la función line_preprocessing que recibe una lista de tuplas de la
 # función anterior y retorna una lista de tuplas (clave, valor). Esta función
 # realiza el preprocesamiento de las líneas de texto,
 #
+import string
+
 def line_preprocessing(sequence):
     """Line Preprocessing"""
+    
+    sequence = [
+        (key, value.translate(str.maketrans("", "", string.punctuation)).lower().strip())
+        for key, value in sequence
+    ]
+    
+    return sequence
 
 
+sequence = load_input(input_directory)
+result = line_preprocessing(sequence)
+print(result, "end")
 #
 # Escriba una función llamada maper que recibe una lista de tuplas de la
 # función anterior y retorna una lista de tuplas (clave, valor). En este caso,
